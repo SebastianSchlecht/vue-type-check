@@ -1,10 +1,11 @@
 import * as path from "path";
 import { TextDocument, Diagnostic } from "vscode-languageserver";
-import { VueInterpolationMode } from "vue-language-server/dist/modes/template/interpolationMode";
-import { getJavascriptMode } from "vue-language-server/dist/modes/script/javascript";
-import { getServiceHost } from "vue-language-server/dist/services/typescriptService/serviceHost";
-import { getLanguageModelCache } from "vue-language-server/dist/embeddedSupport/languageModelCache";
-import { getVueDocumentRegions } from "vue-language-server/dist/embeddedSupport/embeddedSupport";
+import { VueInterpolationMode } from "vls/dist/modes/template/interpolationMode";
+import { getJavascriptMode } from "vls/dist/modes/script/javascript";
+import { getServiceHost } from "vls/dist/services/typescriptService/serviceHost";
+import { getLanguageModelCache } from "vls/dist/embeddedSupport/languageModelCache";
+import { getVueDocumentRegions } from "vls/dist/embeddedSupport/embeddedSupport";
+import { HTMLDocument, parseHTMLDocument } from "vls/dist/modes/template/parser/htmlParser";
 import tsModule from "typescript";
 import ProgressBar from "progress";
 import {
@@ -106,7 +107,8 @@ async function getDiagnostics({ docs, workspace, onlyTemplate }: Source) {
       workspace,
       scriptRegionDocuments
     );
-    const vueMode = new VueInterpolationMode(tsModule, serviceHost);
+    const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
+    const vueMode = new VueInterpolationMode(tsModule, serviceHost, vueDocuments);
     const scriptMode = await getJavascriptMode(
       serviceHost,
       scriptRegionDocuments as any,
