@@ -8,6 +8,7 @@ const {
   srcDir,
   onlyTemplate,
   onlyTypeScript,
+  ignoredDupIdentifier,
   excludeDir,
 } = minimist(process.argv.slice(2));
 
@@ -22,5 +23,17 @@ check({
   srcDir: srcDir && path.resolve(cwd, srcDir),
   onlyTemplate,
   onlyTypeScript,
+  ignoredDupIdentifier: toStringArray(ignoredDupIdentifier),
   excludeDir,
 });
+
+
+function toStringArray(val: any): string[] {
+  if (typeof val === 'string') {
+    return [val]
+  } else if (typeof val === 'object') {
+    return val
+  } else {
+    return [val.toString()]
+  }
+}

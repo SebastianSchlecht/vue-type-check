@@ -23,6 +23,7 @@ interface Options {
   srcDir?: string;
   onlyTemplate?: boolean;
   onlyTypeScript?: boolean;
+  ignoredDupIdentifier: string[];
   excludeDir?: string|string[];
 }
 
@@ -43,7 +44,7 @@ export async function check(options: Options) {
   const excludeDirs = typeof excludeDir === "string" ? [excludeDir] : excludeDir;
   const docs = await traverse(srcDir, onlyTypeScript, excludeDirs);
 
-  await getDiagnostics({ docs, workspace, onlyTemplate });
+  await getDiagnostics({ docs, workspace, onlyTemplate }, options.ignoredDupIdentifier ?? []);
 }
 
 async function traverse(
@@ -92,7 +93,7 @@ async function traverse(
   return docs;
 }
 
-async function getDiagnostics({ docs, workspace, onlyTemplate }: Source) {
+async function getDiagnostics({ docs, workspace, onlyTemplate }: Source, ignoreDupIdentifier: string[]) {
   const documentRegions = getLanguageModelCache(10, 60, (document) =>
     getVueDocumentRegions(document)
   );
@@ -135,6 +136,13 @@ async function getDiagnostics({ docs, workspace, onlyTemplate }: Source) {
             end: result.range.end.line,
             total,
           });
+
+          if (result.message.startsWith('Duplicate identifier') && ignoreDupIdentifier.some((identifier) => result.message.includes(identifier))) {
+            continue
+          }
+
+
+
           printError(`Error in ${doc.uri}`);
           printMessage(
             `${result.range.start.line}:${result.range.start.character} ${result.message}`
