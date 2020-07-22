@@ -1,7 +1,7 @@
 {
-  "name": "vue-type-check",
-  "version": "1.0.0",
-  "description": "a type checker for typescript written Vue components",
+  "name": "fork-vue-type-check",
+  "version": "1.0.1",
+  "description": "a type checker for typescript written Vue components Credits: https://www.npmjs.com/package/vue-type-check",
   "main": "dist/index.js",
   "bin": {
     "vue-type-check": "dist/cli.js",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/Yuyz0112/vue-type-check.git"
+    "url": "git+https://github.com/SebastianSchlecht/vue-type-check.git"
   },
   "keywords": [
     "vue",

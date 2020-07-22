@@ -128,7 +128,6 @@ async function getDiagnostics({ docs, workspace, onlyTemplate }: Source, ignoreD
       }
       const results = vueTplResults.concat(scriptResults);
       if (results.length) {
-        hasError = true;
         for (const result of results) {
           const total = doc.lineCount;
           const lines = getLines({
@@ -142,7 +141,7 @@ async function getDiagnostics({ docs, workspace, onlyTemplate }: Source, ignoreD
           }
 
 
-
+          hasError = true;
           printError(`Error in ${doc.uri}`);
           printMessage(
             `${result.range.start.line}:${result.range.start.character} ${result.message}`
